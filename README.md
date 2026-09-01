@@ -5,6 +5,14 @@ A production-quality, responsive Human-Machine Interface (HMI) built for VMC (Ve
 
 ---
 
+## 🌐 Live Production Application Links
+
+- **Live Demo Site (Netlify)**: [https://primeform.netlify.app/](https://primeform.netlify.app/)
+- **Live Demo Site (Vercel)**: [https://primeform-labs.vercel.app](https://primeform-labs.vercel.app)
+- **GitHub Repository**: [https://github.com/LokeshwarMenati/PRIMEFORM-LABS](https://github.com/LokeshwarMenati/PRIMEFORM-LABS)
+
+---
+
 ## 📌 About the Project
 
 In industrial precision manufacturing, operating a **10,000 RPM high-speed metal milling CNC machine** without proper safety checks can cause **fatal accidents, broken $500 tools, ruined raw material, or expensive machine crashes**. 
