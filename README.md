@@ -7,8 +7,7 @@ A production-quality, responsive Human-Machine Interface (HMI) built for VMC (Ve
 
 ## 🌐 Live Production Application Links
 
-- **Live Demo Site (Netlify)**: [https://primeform.netlify.app/](https://primeform.netlify.app/)
-- **Live Demo Site (Vercel)**: [https://primeform-labs.vercel.app](https://primeform-labs.vercel.app)
+- **Live Demo Site**: [https://primeform.netlify.app/](https://primeform.netlify.app/)
 - **GitHub Repository**: [https://github.com/LokeshwarMenati/PRIMEFORM-LABS](https://github.com/LokeshwarMenati/PRIMEFORM-LABS)
 
 ---
