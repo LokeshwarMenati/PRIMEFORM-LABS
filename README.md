@@ -1,13 +1,16 @@
 # PRIMEFORM LABS — VMC OPERATOR HMI
 ## Vertical Machining Center Startup & Operation Workflow Simulation
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-https%3A%2F%2Fprimeform.netlify.app%2F-10b981?style=for-the-badge&logo=netlify)](https://primeform.netlify.app/)
+[![GitHub Repository](https://img.shields.io/badge/GitHub_Repo-PRIMEFORM--LABS-06b6d4?style=for-the-badge&logo=github)](https://github.com/LokeshwarMenati/PRIMEFORM-LABS)
+
 A production-quality, responsive Human-Machine Interface (HMI) built for VMC (Vertical Machining Center) operators. It enforces a strict, safety-first 6-stage startup and operation workflow with server-validated finite state machine transitions, SQLite/Prisma ORM persistence, dark industrial UX aesthetics, micro-interactions, keyboard accessibility, unit/E2E test suites, custom job order generation, and live simulation mechanics.
 
 ---
 
-## 🌐 Live Production Application Links
+## 🌐 Live Production Application Deployment
 
-- **Live Demo Site**: [https://primeform.netlify.app/](https://primeform.netlify.app/)
+- **Live Production Deployment URL**: [https://primeform.netlify.app/](https://primeform.netlify.app/)
 - **GitHub Repository**: [https://github.com/LokeshwarMenati/PRIMEFORM-LABS](https://github.com/LokeshwarMenati/PRIMEFORM-LABS)
 
 ---
