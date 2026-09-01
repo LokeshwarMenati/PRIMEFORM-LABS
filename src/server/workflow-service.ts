@@ -420,4 +420,40 @@ export class WorkflowService {
 
     return this.getFullHmiState();
   }
+
+  /**
+   * Updates scenario details with custom user inputs and resets workflow for new job execution.
+   */
+  static async updateCustomScenario(data: {
+    partName: string;
+    partNumber: string;
+    material: string;
+    cncProgram: string;
+    cncRevision: string;
+    workOffset: string;
+    fixture?: string;
+  }): Promise<FullHmiState> {
+    await prisma.scenario.update({
+      where: { id: "SCEN-01" },
+      data: {
+        partName: data.partName,
+        partNumber: data.partNumber,
+        material: data.material,
+        cncProgram: data.cncProgram,
+        cncRevision: data.cncRevision,
+        workOffset: data.workOffset,
+        fixture: data.fixture || "Precision machine vise, Fixed parallels",
+      },
+    });
+
+    await this.resetWorkflow();
+    await prisma.workflowState.update({
+      where: { id: "CURRENT" },
+      data: {
+        lastAuditNote: `Custom job order loaded: ${data.partName} (${data.partNumber})`,
+      },
+    });
+
+    return this.getFullHmiState();
+  }
 }

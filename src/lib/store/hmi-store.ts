@@ -15,11 +15,15 @@ interface HmiStoreState {
   toast: ToastMessage | null;
   operatorName: string;
   isDemoAuthModalOpen: boolean;
+  isCustomInputModalOpen: boolean;
+  isHowItWorksModalOpen: boolean;
   audioFeedbackEnabled: boolean;
 
   // Actions
   setOperatorName: (name: string) => void;
   setDemoAuthModalOpen: (open: boolean) => void;
+  setCustomInputModalOpen: (open: boolean) => void;
+  setHowItWorksModalOpen: (open: boolean) => void;
   toggleAudioFeedback: () => void;
   fetchState: () => Promise<void>;
   confirmMachineCheck: (checkId: string) => Promise<void>;
@@ -30,6 +34,15 @@ interface HmiStoreState {
   stopOperation: (reason?: string) => Promise<void>;
   updateSimulationProgress: (progress: number, elapsedSeconds: number) => Promise<void>;
   resetWorkflow: () => Promise<void>;
+  submitCustomScenario: (data: {
+    partName: string;
+    partNumber: string;
+    material: string;
+    cncProgram: string;
+    cncRevision: string;
+    workOffset: string;
+    fixture?: string;
+  }) => Promise<void>;
   clearToast: () => void;
   showToast: (type: "success" | "error" | "info", text: string) => void;
 }
@@ -42,10 +55,14 @@ export const useHmiStore = create<HmiStoreState>((set, get) => ({
   toast: null,
   operatorName: "Demo Operator",
   isDemoAuthModalOpen: false,
+  isCustomInputModalOpen: false,
+  isHowItWorksModalOpen: false,
   audioFeedbackEnabled: true,
 
   setOperatorName: (name: string) => set({ operatorName: name }),
   setDemoAuthModalOpen: (open: boolean) => set({ isDemoAuthModalOpen: open }),
+  setCustomInputModalOpen: (open: boolean) => set({ isCustomInputModalOpen: open }),
+  setHowItWorksModalOpen: (open: boolean) => set({ isHowItWorksModalOpen: open }),
   toggleAudioFeedback: () => set((s) => ({ audioFeedbackEnabled: !s.audioFeedbackEnabled })),
 
   showToast: (type, text) => {
@@ -240,6 +257,29 @@ export const useHmiStore = create<HmiStoreState>((set, get) => ({
       } else {
         set({ isActionLoading: false });
         showToast("error", json.message || "Reset failed");
+      }
+    } catch (err) {
+      set({ isActionLoading: false });
+      showToast("error", "Server communication error");
+    }
+  },
+
+  submitCustomScenario: async (data) => {
+    const { showToast } = get();
+    try {
+      set({ isActionLoading: true });
+      const res = await fetch("/api/scenario/custom", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        set({ hmiState: json.data, isActionLoading: false, isCustomInputModalOpen: false });
+        showToast("success", `Custom Part Order Loaded: ${data.partName} (${data.partNumber})`);
+      } else {
+        set({ isActionLoading: false });
+        showToast("error", json.message || "Failed to load custom scenario");
       }
     } catch (err) {
       set({ isActionLoading: false });

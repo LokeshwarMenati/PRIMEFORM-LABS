@@ -2,11 +2,18 @@
 
 import React from "react";
 import { useHmiStore } from "@/lib/store/hmi-store";
-import { Power, Cpu, Layers, FileCode, Wrench, ArrowRight, ShieldAlert } from "lucide-react";
+import { Power, Layers, FileCode, ArrowRight, ShieldAlert, FilePlus, HelpCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const PowerOnStage: React.FC = () => {
-  const { hmiState, goToStage, isActionLoading } = useHmiStore();
+  const {
+    hmiState,
+    goToStage,
+    isActionLoading,
+    setCustomInputModalOpen,
+    setHowItWorksModalOpen,
+  } = useHmiStore();
+
   if (!hmiState) return null;
 
   const { scenario } = hmiState;
@@ -24,7 +31,7 @@ export const PowerOnStage: React.FC = () => {
           <Power className="h-64 w-64" />
         </div>
 
-        <div className="flex items-center justify-between border-b border-hmi-border pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-hmi-border pb-4">
           <div className="flex items-center space-x-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hmi-primary/10 border border-hmi-primary/40 text-hmi-primary shadow-hmi-glow-cyan">
               <Power className="h-6 w-6" />
@@ -39,13 +46,27 @@ export const PowerOnStage: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-3 py-1 rounded bg-hmi-success/10 border border-hmi-success/30 text-hmi-success font-mono text-xs font-bold">
-            SYSTEM POWER: ONLINE
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setCustomInputModalOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-hmi-primary/40 bg-hmi-primary/10 hover:bg-hmi-primary/20 text-hmi-primary font-mono text-xs font-bold transition-all shadow-hmi-glow-cyan"
+            >
+              <FilePlus className="h-4 w-4" />
+              <span>+ Load Custom Job Order</span>
+            </button>
+
+            <button
+              onClick={() => setHowItWorksModalOpen(true)}
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg border border-hmi-border bg-hmi-panel hover:bg-hmi-border text-hmi-text-muted hover:text-hmi-text font-mono text-xs transition-colors"
+            >
+              <HelpCircle className="h-4 w-4 text-hmi-accent" />
+              <span>Watch Demo Guide</span>
+            </button>
           </div>
         </div>
 
         <p className="text-sm text-hmi-text-muted leading-relaxed">
-          Welcome to the Primeform Labs VMC Operator Interface. The machine control system is powered on and ready to guide you step-by-step through the mandatory safety checks, tooling setup, workpiece positioning, and ready review.
+          Welcome to the Primeform Labs VMC Operator Interface. The machine control system is powered on and ready to guide you step-by-step through mandatory safety checks, tooling setup, workpiece positioning, and ready review.
         </p>
 
         {/* Scenario Details Matrix */}

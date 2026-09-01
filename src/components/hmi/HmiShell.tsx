@@ -6,6 +6,8 @@ import { HmiHeader } from "./HmiHeader";
 import { WorkflowStepper } from "./WorkflowStepper";
 import { MachineStatusStrip } from "./MachineStatusStrip";
 import { OperatorAuthModal } from "./OperatorAuthModal";
+import { CustomScenarioModal } from "./CustomScenarioModal";
+import { HowItWorksModal } from "./HowItWorksModal";
 import { Toast } from "@/components/ui/Toast";
 
 import { PowerOnStage } from "./stages/PowerOnStage";
@@ -204,6 +206,12 @@ export const HmiShell: React.FC = () => {
 
       {/* Operator Session Modal */}
       <OperatorAuthModal />
+
+      {/* Custom Scenario Input Modal */}
+      <CustomScenarioModal />
+
+      {/* How It Works Demo Modal */}
+      <HowItWorksModal />
 
       {/* Notification Toast */}
       <Toast />

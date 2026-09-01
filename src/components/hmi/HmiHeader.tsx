@@ -2,17 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import { useHmiStore } from "@/lib/store/hmi-store";
-import { Cpu, ShieldAlert, UserCheck, Volume2, VolumeX, RotateCcw } from "lucide-react";
+import { Cpu, ShieldAlert, UserCheck, Volume2, VolumeX, RotateCcw, FilePlus, HelpCircle, LogOut } from "lucide-react";
 
 export const HmiHeader: React.FC = () => {
   const {
     hmiState,
     operatorName,
     setDemoAuthModalOpen,
+    setCustomInputModalOpen,
+    setHowItWorksModalOpen,
     audioFeedbackEnabled,
     toggleAudioFeedback,
     resetWorkflow,
     isActionLoading,
+    showToast,
   } = useHmiStore();
 
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -69,9 +72,9 @@ export const HmiHeader: React.FC = () => {
         </div>
 
         {/* Right Telemetry & Operator Menu */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           {/* Connection status */}
-          <div className="flex items-center space-x-2 text-xs font-mono text-hmi-success bg-hmi-success/10 px-2.5 py-1 rounded border border-hmi-success/30">
+          <div className="hidden sm:flex items-center space-x-2 text-xs font-mono text-hmi-success bg-hmi-success/10 px-2.5 py-1 rounded border border-hmi-success/30">
             <span className="h-2 w-2 rounded-full bg-hmi-success animate-ping" />
             <span>CONNECTED</span>
           </div>
@@ -81,31 +84,38 @@ export const HmiHeader: React.FC = () => {
             {currentTime || "--:--:--"}
           </div>
 
+          {/* New Job Custom Input Button */}
+          <button
+            onClick={() => setCustomInputModalOpen(true)}
+            title="Create Custom Job Input"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-hmi-primary/40 bg-hmi-primary/10 hover:bg-hmi-primary/20 text-hmi-primary text-xs font-mono font-bold transition-all shadow-hmi-glow-cyan"
+          >
+            <FilePlus className="h-4 w-4" />
+            <span className="hidden md:inline">+ New Job Input</span>
+          </button>
+
+          {/* How It Works / Demo Video */}
+          <button
+            onClick={() => setHowItWorksModalOpen(true)}
+            title="Watch Demo / How It Works"
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg border border-hmi-border bg-hmi-card hover:bg-hmi-border text-hmi-text-muted hover:text-hmi-text text-xs font-mono transition-colors"
+          >
+            <HelpCircle className="h-4 w-4 text-hmi-accent" />
+            <span className="hidden md:inline">How It Works</span>
+          </button>
+
           {/* Reset Demo Button */}
           <button
             onClick={() => resetWorkflow()}
             disabled={isActionLoading}
             title="Reset Workflow Demo"
-            className="flex items-center space-x-1 px-2.5 py-1 rounded border border-hmi-border bg-hmi-card hover:bg-hmi-border text-hmi-text-muted hover:text-hmi-text text-xs transition-colors"
+            className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg border border-hmi-border bg-hmi-card hover:bg-hmi-border text-hmi-text-muted hover:text-hmi-text text-xs font-mono transition-colors"
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            <span>Reset Demo</span>
+            <span className="hidden md:inline">Reset</span>
           </button>
 
-          {/* Mute Audio Toggle */}
-          <button
-            onClick={toggleAudioFeedback}
-            title={audioFeedbackEnabled ? "Audio feedback ON" : "Audio feedback OFF"}
-            className="p-1.5 rounded border border-hmi-border bg-hmi-card hover:bg-hmi-border text-hmi-text-muted transition-colors"
-          >
-            {audioFeedbackEnabled ? (
-              <Volume2 className="h-4 w-4 text-hmi-primary" />
-            ) : (
-              <VolumeX className="h-4 w-4 text-hmi-text-dim" />
-            )}
-          </button>
-
-          {/* Operator Profile Button */}
+          {/* Operator Profile / Sign Out Button */}
           <button
             onClick={() => setDemoAuthModalOpen(true)}
             className="flex items-center space-x-2 bg-hmi-card border border-hmi-border hover:border-hmi-primary/50 px-3 py-1.5 rounded-lg text-xs font-mono text-hmi-text transition-all"
