@@ -42,20 +42,61 @@ export class WorkflowService {
       });
     }
 
-    const checks = await prisma.machineCheck.findMany({
+    let checks = await prisma.machineCheck.findMany({
       where: { scenarioId: scenario.id },
       orderBy: { order: "asc" },
     });
 
-    const tools = await prisma.toolCheck.findMany({
+    if (checks.length === 0) {
+      const defaultChecks = [
+        { code: "CHK-01", title: "Power / Control Available", instruction: "Verify 3-phase main power supply and cabinet control power are energized.", order: 1 },
+        { code: "CHK-02", title: "E-Stop Released", instruction: "Inspect emergency stop pushbuttons on HMI panel and pendant controller. Ensure E-stop circuit is reset.", order: 2 },
+        { code: "CHK-03", title: "Guard / Door Closed", instruction: "Close main spindle enclosure safety door and verify interlock switch engaged signal.", order: 3 },
+        { code: "CHK-04", title: "No Active Alarm", instruction: "Confirm CNC diagnostic panel indicates zero active safety faults or axis servo alarms.", order: 4 },
+        { code: "CHK-05", title: "Lubrication / Coolant Ready", instruction: "Check automatic guideway lube reservoir and verify flood coolant tank level (≥80%).", order: 5 },
+        { code: "CHK-06", title: "Reference Return Complete", instruction: "Execute machine zero-return homing sequence for X, Y, and Z axes.", order: 6 },
+      ];
+      for (const check of defaultChecks) {
+        await prisma.machineCheck.create({ data: { scenarioId: scenario.id, ...check, confirmed: false } });
+      }
+      checks = await prisma.machineCheck.findMany({ where: { scenarioId: scenario.id }, orderBy: { order: "asc" } });
+    }
+
+    let tools = await prisma.toolCheck.findMany({
       where: { scenarioId: scenario.id },
       orderBy: { order: "asc" },
     });
 
-    const workpieceChecks = await prisma.workpieceCheck.findMany({
+    if (tools.length === 0) {
+      const defaultTools = [
+        { toolNumber: "T01", toolType: "Ø50 mm Face Mill", purpose: "Face milling", cncProgram: "O1001", cncRevision: "Rev 03", order: 1 },
+        { toolNumber: "T02", toolType: "Ø10 mm Carbide End Mill", purpose: "Rough pocket machining", cncProgram: "O1001", cncRevision: "Rev 03", order: 2 },
+        { toolNumber: "T03", toolType: "Ø6 mm Carbide End Mill", purpose: "Pocket finishing", cncProgram: "O1001", cncRevision: "Rev 03", order: 3 },
+        { toolNumber: "T04", toolType: "Ø6 mm Drill", purpose: "Drilling", cncProgram: "O1001", cncRevision: "Rev 03", order: 4 },
+      ];
+      for (const tool of defaultTools) {
+        await prisma.toolCheck.create({ data: { scenarioId: scenario.id, ...tool, confirmed: false } });
+      }
+      tools = await prisma.toolCheck.findMany({ where: { scenarioId: scenario.id }, orderBy: { order: "asc" } });
+    }
+
+    let workpieceChecks = await prisma.workpieceCheck.findMany({
       where: { scenarioId: scenario.id },
       orderBy: { order: "asc" },
     });
+
+    if (workpieceChecks.length === 0) {
+      const defaultWp = [
+        { stepName: "Fixture Alignment & Parallels", instruction: "Mount precision machine vise on T-slot table with ground parallel bars placed flush.", fixtureDetails: "Precision machine vise, Fixed parallels", workOffsetDetails: "G54", orientationDetails: "Stock flat on parallels against fixed jaw", materialDetails: "Aluminium 6061-T6", drawingDetails: "PF-VM-001 Rev B", order: 1 },
+        { stepName: "Stock Loading & Seating", instruction: "Position Aluminium 6061-T6 raw plate (PF-VM-001) against work stop reference pin.", fixtureDetails: "Precision machine vise, Fixed parallels", workOffsetDetails: "G54", orientationDetails: "Stock flat on parallels against fixed jaw", materialDetails: "Aluminium 6061-T6", drawingDetails: "PF-VM-001 Rev B", order: 2 },
+        { stepName: "Clamping Torque Verification", instruction: "Tighten vise spindle lead screw to 45 Nm torque using calibrated torque wrench.", fixtureDetails: "Precision machine vise, Fixed parallels", workOffsetDetails: "G54", orientationDetails: "Stock flat on parallels against fixed jaw", materialDetails: "Aluminium 6061-T6", drawingDetails: "PF-VM-001 Rev B", order: 3 },
+        { stepName: "Work Offset G54 Verification", instruction: "Confirm G54 X0 Y0 Z0 origin values in CNC controller match drawing datum PF-VM-001 Rev B.", fixtureDetails: "Precision machine vise, Fixed parallels", workOffsetDetails: "G54", orientationDetails: "Stock flat on parallels against fixed jaw", materialDetails: "Aluminium 6061-T6", drawingDetails: "PF-VM-001 Rev B", order: 4 },
+      ];
+      for (const wp of defaultWp) {
+        await prisma.workpieceCheck.create({ data: { scenarioId: scenario.id, ...wp, confirmed: false } });
+      }
+      workpieceChecks = await prisma.workpieceCheck.findMany({ where: { scenarioId: scenario.id }, orderBy: { order: "asc" } });
+    }
 
     let workflow = await prisma.workflowState.findUnique({ where: { id: "CURRENT" } });
     if (!workflow) {
