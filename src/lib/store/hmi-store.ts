@@ -14,12 +14,16 @@ interface HmiStoreState {
   error: string | null;
   toast: ToastMessage | null;
   operatorName: string;
+  badgeId: string;
+  isAuthenticated: boolean;
   isDemoAuthModalOpen: boolean;
   isCustomInputModalOpen: boolean;
   isHowItWorksModalOpen: boolean;
   audioFeedbackEnabled: boolean;
 
   // Actions
+  login: (operatorName: string, badgeId?: string) => void;
+  logout: () => void;
   setOperatorName: (name: string) => void;
   setDemoAuthModalOpen: (open: boolean) => void;
   setCustomInputModalOpen: (open: boolean) => void;
@@ -54,10 +58,31 @@ export const useHmiStore = create<HmiStoreState>((set, get) => ({
   error: null,
   toast: null,
   operatorName: "Demo Operator",
+  badgeId: "OP-5049",
+  isAuthenticated: true, // Defaults to authenticated so demo operator can test immediately, can sign out to see login page
   isDemoAuthModalOpen: false,
   isCustomInputModalOpen: false,
   isHowItWorksModalOpen: false,
   audioFeedbackEnabled: true,
+
+  login: (name: string, badgeId?: string) => {
+    set({
+      operatorName: name,
+      badgeId: badgeId || "OP-5049",
+      isAuthenticated: true,
+      isDemoAuthModalOpen: false,
+    });
+    get().showToast("success", `Signed in as ${name}`);
+  },
+
+  logout: () => {
+    set({
+      isAuthenticated: false,
+      operatorName: "Unassigned Operator",
+      isDemoAuthModalOpen: false,
+    });
+    get().showToast("info", "Signed out of workstation session");
+  },
 
   setOperatorName: (name: string) => set({ operatorName: name }),
   setDemoAuthModalOpen: (open: boolean) => set({ isDemoAuthModalOpen: open }),

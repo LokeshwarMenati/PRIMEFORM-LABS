@@ -8,6 +8,7 @@ import { MachineStatusStrip } from "./MachineStatusStrip";
 import { OperatorAuthModal } from "./OperatorAuthModal";
 import { CustomScenarioModal } from "./CustomScenarioModal";
 import { HowItWorksModal } from "./HowItWorksModal";
+import { LoginPage } from "@/components/auth/LoginPage";
 import { Toast } from "@/components/ui/Toast";
 
 import { PowerOnStage } from "./stages/PowerOnStage";
@@ -25,6 +26,7 @@ export const HmiShell: React.FC = () => {
     hmiState,
     isLoading,
     error,
+    isAuthenticated,
     fetchState,
     confirmMachineCheck,
     confirmToolCheck,
@@ -100,6 +102,16 @@ export const HmiShell: React.FC = () => {
     stopOperation,
     goToStage,
   ]);
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <LoginPage />
+        <HowItWorksModal />
+        <Toast />
+      </>
+    );
+  }
 
   if (isLoading) {
     return (
