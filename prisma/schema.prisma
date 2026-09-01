@@ -1,0 +1,104 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Machine {
+  id              String   @id @default("VMC-01")
+  name            String   @default("Primeform VMC 500")
+  machineCode     String   @default("VMC-01")
+  powerStatus     String   @default("ONLINE")
+  safetyStatus    String   @default("CLEAR")
+  controlStatus   String   @default("READY")
+  connectionStatus String  @default("CONNECTED")
+  updatedAt       DateTime @updatedAt
+}
+
+model Scenario {
+  id              String   @id @default("SCEN-01")
+  partName        String
+  partNumber      String
+  quantity        Int      @default(1)
+  material        String
+  drawingRevision String
+  cncProgram      String
+  cncRevision     String
+  fixture         String
+  workOffset      String
+  operationId     String
+  operationName   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  machineChecks   MachineCheck[]
+  toolChecks      ToolCheck[]
+  workpieceChecks WorkpieceCheck[]
+  workflowStates  WorkflowState[]
+}
+
+model MachineCheck {
+  id           String   @id @default(uuid())
+  scenarioId   String
+  code         String
+  title        String
+  instruction  String
+  order        Int
+  confirmed    Boolean  @default(false)
+  confirmedAt  DateTime?
+  confirmedBy  String?
+
+  scenario     Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+}
+
+model ToolCheck {
+  id           String   @id @default(uuid())
+  scenarioId   String
+  toolNumber   String
+  toolType     String
+  purpose      String
+  cncProgram   String
+  cncRevision  String
+  order        Int
+  confirmed    Boolean  @default(false)
+  confirmedAt  DateTime?
+  confirmedBy  String?
+
+  scenario     Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+}
+
+model WorkpieceCheck {
+  id                  String   @id @default(uuid())
+  scenarioId          String
+  stepName            String
+  instruction         String
+  fixtureDetails      String
+  workOffsetDetails   String
+  orientationDetails  String
+  materialDetails     String
+  drawingDetails      String
+  order               Int
+  confirmed           Boolean  @default(false)
+  confirmedAt         DateTime?
+  confirmedBy         String?
+
+  scenario            Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+}
+
+model WorkflowState {
+  id                String   @id @default("CURRENT")
+  scenarioId        String
+  currentStage      String   @default("POWER_ON")
+  currentItemIndex  Int      @default(0)
+  operationStatus   String   @default("READY")
+  simulatedProgress Float    @default(0.0)
+  elapsedSeconds    Int      @default(0)
+  operatorName      String   @default("Demo Operator")
+  lastAuditNote     String?
+  updatedAt         DateTime @updatedAt
+
+  scenario          Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+}
